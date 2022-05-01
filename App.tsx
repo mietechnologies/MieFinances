@@ -1,11 +1,10 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { DataController } from './screens/data';
 import { ExpensesController } from './screens/expenses';
-import { IncomeController } from './screens/income';
 import { MaterialIcons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
+import { IncomeStack } from './stacks/income-stack';
 
 const Tabs = createBottomTabNavigator();
 
@@ -14,7 +13,7 @@ export default function App() {
 <NavigationContainer>
   <Tabs.Navigator screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
-        let iconColor = focused ? "black" : "gray"
+        let iconColor = focused ? "black" : "lightgray"
 
         switch (route.name) {
           case "income": return <MaterialIcons name="attach-money" size={24} color={iconColor} />
@@ -24,13 +23,9 @@ export default function App() {
         }
       },
       tabBarActiveTintColor: 'tomato',
-      tabBarInactiveTintColor: 'gray',
+      tabBarInactiveTintColor: 'lightgray',
     })}>
-    <Tabs.Screen name="income" component={IncomeController} options={{title:"Income", headerRight: () => {
-      return <TouchableOpacity style={styles.header_button}>
-        <AntDesign name="pluscircleo" size={24} color="blue" />
-      </TouchableOpacity>
-    }}} />
+    <Tabs.Screen name="income" component={IncomeStack} options={{ headerShown: false, title:"Income"}} />
     <Tabs.Screen name="expenses" component={ExpensesController} options={{title:"Expenses"}} />
     <Tabs.Screen name="data" component={DataController} options={{title:"Data"}} />
   </Tabs.Navigator>
