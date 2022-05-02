@@ -1,49 +1,27 @@
-export function incomePerWeek(amount, type) {
-  console.log(amount, type);
-  let value = 0;
+function incomePerDay(amount, type) {
   switch (type) {
     case "Weekly":
-      value = amount;
+      return (amount / 7) * 100;
     case "Biweekly":
-      value = (amount / 14) * 7;
+      return (amount / 14) * 100;
     case "Monthly":
-      value = (amount / 30.437) * 7;
+      return (amount / 30.437) * 100;
     case "Semimonthly":
-      value = (amount / (30.437 / 2)) * 7;
+      return (amount / (30.437 / 2)) * 100;
   }
-  return value * 100;
+  return 0;
+}
+
+export function incomePerWeek(amount, type) {
+  return incomePerDay(amount, type) * 7;
 }
 
 export function incomePerMonth(amount, type) {
-  console.log(amount, type);
-  let value = 0;
-  switch (type) {
-    case "Weekly":
-      value = (amount / 7) * 30;
-    case "Biweekly":
-      value = (amount / 14) * 30;
-    case "Monthly":
-      value = amount;
-    case "Semimonthly":
-      value = (amount / 15) * 30;
-  }
-  return value * 100;
+  return incomePerDay(amount, type) * 30.437;
 }
 
 export function incomePerYear(amount, type) {
-  console.log(amount, type);
-  let value = 0;
-  switch (type) {
-    case "Weekly":
-      value = (amount / 7) * 365.25;
-    case "Biweekly":
-      value = (amount / 14) * 365.25;
-    case "Monthly":
-      value = (amount / 30.437) * 365.25;
-    case "Semimonthly":
-      value = (amount / (30.437 / 2)) * 365.25;
-  }
-  return value * 100;
+  return incomePerDay(amount, type) * 365.25;
 }
 
 export var IncomeModel = {

@@ -13,31 +13,24 @@ import { Utility } from "../utils/utility";
 export const EditIncomeModal = ({ model }) => {
   const incomeTypes = ["Weekly", "Biweekly", "Monthly", "Semimonthly"];
 
-  const [name, setName] = useState();
-  const [amount, setAmount] = useState("0");
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState("");
   const [type, setType] = useState("Weekly");
-  const [perWeek, setPerWeek] = useState(0);
-  const [perMonth, setPerMonth] = useState(0);
-  const [perYear, setPerYear] = useState(0);
 
   let tempModel = model || IncomeModel;
 
-  const setDetails = (name, amount, type) => {
+  const setDetails = (name, newAmount, type) => {
     if (name != undefined) {
       setName(name);
     }
 
-    if (amount != undefined) {
-      setAmount(amount);
+    if (newAmount != undefined) {
+      setAmount(newAmount);
     }
 
     if (type != undefined) {
       setType(type);
     }
-
-    setPerWeek(incomePerWeek(amount, type));
-    setPerMonth(incomePerMonth(amount, type));
-    setPerYear(incomePerYear(amount, type));
   };
 
   return (
@@ -68,9 +61,9 @@ export const EditIncomeModal = ({ model }) => {
           <Text style={styles.field_label}>Income Type:</Text>
           <Picker
             style={styles.picker}
-            item={type}
+            item={{ label: type, value: type }}
             onItemChange={(value) => {
-              setDetails(name, amount, value.value);
+              setDetails(name, amount, value.label);
             }}
             title="Income Type"
             placeholder="Weekly"
@@ -82,19 +75,19 @@ export const EditIncomeModal = ({ model }) => {
         <View style={styles.horizontal_field_container}>
           <Text style={styles.detail_title}>Per Week:</Text>
           <Text style={styles.detail_label}>
-            {Utility.formatNumberAsCurrency(perWeek)}
+            {Utility.formatNumberAsCurrency(incomePerWeek(amount, type))}
           </Text>
         </View>
         <View style={styles.horizontal_field_container}>
           <Text style={styles.detail_title}>Per Month:</Text>
           <Text style={styles.detail_label}>
-            {Utility.formatNumberAsCurrency(perMonth)}
+            {Utility.formatNumberAsCurrency(incomePerMonth(amount, type))}
           </Text>
         </View>
         <View style={styles.horizontal_field_container}>
           <Text style={styles.detail_title}>Per Year:</Text>
           <Text style={styles.detail_label}>
-            {Utility.formatNumberAsCurrency(perYear)}
+            {Utility.formatNumberAsCurrency(incomePerYear(amount, type))}
           </Text>
         </View>
       </View>

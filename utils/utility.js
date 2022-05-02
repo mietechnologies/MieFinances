@@ -1,9 +1,11 @@
 function formatNumberAsCurrency(number) {
+  // For data integrity, we will store number values as a number of cents
   const numberAsFloat = number / 100.0;
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   });
+  // return formatter.format(number);
   return formatter.format(numberAsFloat);
 }
 
