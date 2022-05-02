@@ -35,8 +35,12 @@ export const IncomeStack = ({ navigation }) => {
         name="editIncome"
         component={EditIncomeModal}
         options={{
-          title: "Income",
+          title: "Income Source",
           presentation: "modal",
+          headerLeft: () => null,
+          headerRight: () => {
+            // TODO: Add close button
+          },
         }}
       />
     </NavigationStack.Navigator>
