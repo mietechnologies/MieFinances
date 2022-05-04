@@ -52,7 +52,7 @@ export const EditIncomeModal = ({ navigation, model }) => {
       const newItems = { ...existingItems, tempModel };
       await Storage.setJsonItemsFor("incomeSources", newItems);
 
-      console.log(navigation.goBack());
+      navigation.goBack();
     }
   };
 
