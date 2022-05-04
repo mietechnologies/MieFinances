@@ -12,3 +12,5 @@ async function setJsonItemsFor(key, items) {
   await AsyncStorage.setItem(key, json);
   return json;
 }
+
+export const Storage = { getJsonItemsFor, setJsonItemsFor };

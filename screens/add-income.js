@@ -1,16 +1,19 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { Picker } from "react-native-woodpicker";
+import { ActionButton } from "../components/action-button";
+import { TextInputField } from "../components/text-input-field";
 import {
   IncomeModel,
   incomePerMonth,
   incomePerWeek,
   incomePerYear,
 } from "../models/income-model";
+import { Storage } from "../utils/storage";
 import { Utility } from "../utils/utility";
 
-export const EditIncomeModal = ({ model }) => {
+export const EditIncomeModal = ({ navigation, model }) => {
   const incomeTypes = ["Weekly", "Biweekly", "Monthly", "Semimonthly"];
 
   const [name, setName] = useState("");
@@ -33,30 +36,56 @@ export const EditIncomeModal = ({ model }) => {
     }
   };
 
+  const save = async () => {
+    if (confirm()) {
+      tempModel.source = name;
+      tempModel.amount = amount;
+      tempModel.type = type;
+
+      // If a model was passed in, we're editing
+      if (model) {
+        return;
+      }
+
+      // Otherwise, we're creating a new one
+      const existingItems = await Storage.getJsonItemsFor("incomeSources");
+      const newItems = { ...existingItems, tempModel };
+      await Storage.setJsonItemsFor("incomeSources", newItems);
+
+      console.log(navigation.goBack());
+    }
+  };
+
+  const confirm = () => {
+    if (name == "" || type == "") {
+      Alert.alert(
+        "Missing Info!",
+        "Please ensure that all information is present!",
+        [{ title: "Okay" }]
+      );
+      return false;
+    }
+    return true;
+  };
+
   return (
     <ScrollView>
       <View style={styles.container}>
-        <View style={styles.field_container}>
-          <Text style={styles.field_label}>Source:</Text>
-          <TextInput
-            style={styles.input_field}
-            value={name}
-            onChangeText={(text) => {
-              setDetails(text, amount, type);
-            }}
-          ></TextInput>
-        </View>
-        <View style={styles.field_container}>
-          <Text style={styles.field_label}>Amount:</Text>
-          <TextInput
-            style={styles.input_field}
-            keyboardType="decimal-pad"
-            value={amount}
-            onChangeText={(text) => {
-              setDetails(name, text, type);
-            }}
-          ></TextInput>
-        </View>
+        <TextInputField
+          title="Source:"
+          value={name}
+          onChangeText={(text) => {
+            setDetails(text, amount, type);
+          }}
+        />
+        <TextInputField
+          title="Amount:"
+          value={amount}
+          keyboardType="decimal-pad"
+          onChangeText={(text) => {
+            setDetails(name, text, type);
+          }}
+        />
         <View style={styles.field_container}>
           <Text style={styles.field_label}>Income Type:</Text>
           <Picker
@@ -90,6 +119,7 @@ export const EditIncomeModal = ({ model }) => {
             {Utility.formatNumberAsCurrency(incomePerYear(amount, type))}
           </Text>
         </View>
+        <ActionButton title="Save" onPress={save} />
       </View>
     </ScrollView>
   );
