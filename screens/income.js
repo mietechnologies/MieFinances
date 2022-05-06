@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, Share, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { IncomeSourceRow } from "../components/income-source-row";
 import { NoItemsView } from "../components/no-items-view";
+import { NoticeRow } from "../components/notice-row";
 import { Storage } from "../utils/storage";
 
 export const IncomeController = ({ navigation }) => {
@@ -18,6 +19,12 @@ export const IncomeController = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <ScrollView>
+        {
+          // TODO: Add notification cell that contains the following info:
+          // - Current monthly income state
+          // - Any warnings/information pertinent to user's finances
+        }
+        <NoticeRow incomes={incomes} />
         {incomes.length ? (
           incomes.map((source) => (
             <IncomeSourceRow
