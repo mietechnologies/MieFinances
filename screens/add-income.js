@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextPropTypes,
+  View,
+} from "react-native";
 import { Picker } from "react-native-woodpicker";
 import { ActionButton } from "../components/action-button";
 import { TextInputField } from "../components/text-input-field";
@@ -15,8 +22,6 @@ import { Utility } from "../utils/utility";
 export const EditIncomeModal = ({ navigation, route }) => {
   const incomeTypes = ["Weekly", "Biweekly", "Monthly", "Semimonthly"];
   const model = route?.params?.source;
-  console.log("route:", route);
-  console.log("add income source:", model);
 
   const [name, setName] = useState(model?.source ? model.source : "");
   const [amount, setAmount] = useState(
@@ -40,28 +45,33 @@ export const EditIncomeModal = ({ navigation, route }) => {
     }
   };
 
+  const del = async () => {
+    Alert.alert(
+      `Delete ${name}?`,
+      "Are you sure you want to delete this income source?",
+      [
+        {
+          text: "Yes",
+          style: "destructive",
+          onPress: async () => {
+            await Storage.deleteIncome(model);
+            navigation.goBack();
+          },
+        },
+        {
+          text: "No",
+        },
+      ]
+    );
+  };
+
   const save = async () => {
     if (confirm()) {
-      tempModel.source = name;
       tempModel.amount = amount * 100;
+      tempModel.source = name;
       tempModel.type = type;
 
-      // If a model was passed in, we're editing
-      if (model) {
-        return;
-      }
-
-      // Otherwise, we're creating a new one
-      const existingItems = await Storage.getJsonItemsFor("incomeSources");
-
-      if (existingItems) {
-        const newItems = [...existingItems, tempModel];
-        await Storage.setJsonItemsFor("incomeSources", newItems);
-      } else {
-        const newItems = [tempModel];
-        await Storage.setJsonItemsFor("incomeSources", newItems);
-      }
-
+      await Storage.addIncome(tempModel);
       navigation.goBack();
     }
   };
@@ -71,7 +81,7 @@ export const EditIncomeModal = ({ navigation, route }) => {
       Alert.alert(
         "Missing Info!",
         "Please ensure that all information is present!",
-        [{ title: "Okay" }]
+        [{ text: "Okay" }]
       );
       return false;
     }
@@ -130,6 +140,7 @@ export const EditIncomeModal = ({ navigation, route }) => {
           </Text>
         </View>
         <ActionButton title="Save" onPress={save} />
+        {model ? <ActionButton title="Delete" onPress={del} /> : null}
       </View>
     </ScrollView>
   );

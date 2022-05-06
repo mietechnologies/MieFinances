@@ -37,10 +37,10 @@ export const IncomeStack = ({ navigation }) => {
         options={{
           title: "Income Source",
           presentation: "modal",
-          headerLeft: () => null,
-          headerRight: () => {
+          headerLeft: () => {
             // TODO: Add close button
           },
+          headerRight: () => null,
         }}
       />
     </NavigationStack.Navigator>
