@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Picker } from "react-native-woodpicker";
 import { ActionButton } from "../components/action-button";
 import { TextInputField } from "../components/text-input-field";
@@ -13,12 +12,17 @@ import {
 import { Storage } from "../utils/storage";
 import { Utility } from "../utils/utility";
 
-export const EditIncomeModal = ({ navigation, model }) => {
+export const EditIncomeModal = ({ navigation, route }) => {
   const incomeTypes = ["Weekly", "Biweekly", "Monthly", "Semimonthly"];
+  const model = route?.params?.source;
+  console.log("route:", route);
+  console.log("add income source:", model);
 
-  const [name, setName] = useState("");
-  const [amount, setAmount] = useState("");
-  const [type, setType] = useState("Weekly");
+  const [name, setName] = useState(model?.source ? model.source : "");
+  const [amount, setAmount] = useState(
+    model?.amount ? `${model.amount / 100}` : ""
+  );
+  const [type, setType] = useState(model?.type ? model.type : "Weekly");
 
   let tempModel = model || IncomeModel;
 
@@ -39,7 +43,7 @@ export const EditIncomeModal = ({ navigation, model }) => {
   const save = async () => {
     if (confirm()) {
       tempModel.source = name;
-      tempModel.amount = amount;
+      tempModel.amount = amount * 100;
       tempModel.type = type;
 
       // If a model was passed in, we're editing
@@ -49,8 +53,14 @@ export const EditIncomeModal = ({ navigation, model }) => {
 
       // Otherwise, we're creating a new one
       const existingItems = await Storage.getJsonItemsFor("incomeSources");
-      const newItems = { ...existingItems, tempModel };
-      await Storage.setJsonItemsFor("incomeSources", newItems);
+
+      if (existingItems) {
+        const newItems = [...existingItems, tempModel];
+        await Storage.setJsonItemsFor("incomeSources", newItems);
+      } else {
+        const newItems = [tempModel];
+        await Storage.setJsonItemsFor("incomeSources", newItems);
+      }
 
       navigation.goBack();
     }
