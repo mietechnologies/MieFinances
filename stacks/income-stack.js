@@ -2,7 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { IncomeController } from "../screens/income";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Feather } from "@expo/vector-icons";
 import { EditIncomeModal } from "../screens/add-income";
 
 const NavigationStack = createStackNavigator();
@@ -37,10 +37,16 @@ export const IncomeStack = ({ navigation }) => {
         options={{
           title: "Income Source",
           presentation: "modal",
-          headerLeft: () => {
-            // TODO: Add close button
+          headerLeft: (props) => {
+            return (
+              <TouchableOpacity
+                style={styles.header_button}
+                onPress={props.onPress}
+              >
+                <Feather name="x-circle" size={24} color="blue" />
+              </TouchableOpacity>
+            );
           },
-          headerRight: () => null,
         }}
       />
     </NavigationStack.Navigator>

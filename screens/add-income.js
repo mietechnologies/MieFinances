@@ -7,8 +7,9 @@ import {
   TextPropTypes,
   View,
 } from "react-native";
-import { Picker } from "react-native-woodpicker";
+import { DatePicker, Picker } from "react-native-woodpicker";
 import { ActionButton } from "../components/action-button";
+import { DateRow } from "../components/date-row";
 import { TextInputField } from "../components/text-input-field";
 import {
   IncomeModel,
@@ -28,6 +29,7 @@ export const EditIncomeModal = ({ navigation, route }) => {
     model?.amount ? `${model.amount / 100}` : ""
   );
   const [type, setType] = useState(model?.type ? model.type : "Weekly");
+  const [dates, setDates] = useState(model?.dates ? [] + model.dates : []);
 
   let tempModel = model || IncomeModel;
 
@@ -120,6 +122,11 @@ export const EditIncomeModal = ({ navigation, route }) => {
               return { label: type, value: type };
             })}
           />
+        </View>
+        <View>
+          {dates.map((date) => {
+            <DateRow date={date} />;
+          })}
         </View>
         <View style={styles.horizontal_field_container}>
           <Text style={styles.detail_title}>Per Week:</Text>

@@ -32,10 +32,10 @@ export const NoticeRow = ({ incomes, expenses }) => {
     //   }
     // }
 
-    setIncome(localIncome);
-    setExpense(localExpense);
-    setLeftover(localIncome - localExpense);
-    setWarning(localIncome < localExpense);
+    // setIncome(localIncome);
+    // setExpense(localExpense);
+    // setLeftover(localIncome - localExpense);
+    // setWarning(localIncome < localExpense);
   }, []);
 
   return (

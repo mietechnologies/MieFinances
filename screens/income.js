@@ -19,12 +19,6 @@ export const IncomeController = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <ScrollView>
-        {
-          // TODO: Add notification cell that contains the following info:
-          // - Current monthly income state
-          // - Any warnings/information pertinent to user's finances
-        }
-        <NoticeRow incomes={incomes} />
         {incomes.length ? (
           incomes.map((source) => (
             <IncomeSourceRow
