@@ -29,7 +29,7 @@ export const EditIncomeModal = ({ navigation, route }) => {
     model?.amount ? `${model.amount / 100}` : ""
   );
   const [type, setType] = useState(model?.type ? model.type : "Weekly");
-  const [dates, setDates] = useState(model?.dates ? [] + model.dates : []);
+  const [dates, setDates] = useState(model?.dates ? [{}] + model.dates : [{}]);
 
   let tempModel = model || IncomeModel;
 
@@ -123,9 +123,11 @@ export const EditIncomeModal = ({ navigation, route }) => {
             })}
           />
         </View>
-        <View>
+        <View style={styles.list_container}>
+          <Text>Dates:</Text>
+          <DateRow date={{ type: "weekly", value: 15 }} />
           {dates.map((date) => {
-            <DateRow date={date} />;
+            return <DateRow date={date} />;
           })}
         </View>
         <View style={styles.horizontal_field_container}>
@@ -184,5 +186,10 @@ const styles = StyleSheet.create({
   },
   detail_label: {
     color: "gray",
+  },
+  list_container: {
+    flex: 1,
+    margin: 10,
+    marginHorizontal: 15,
   },
 });
