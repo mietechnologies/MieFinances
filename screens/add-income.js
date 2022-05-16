@@ -1,37 +1,39 @@
 import React, { useState } from "react";
-import {
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextPropTypes,
-  View,
-} from "react-native";
-import { DatePicker, Picker } from "react-native-woodpicker";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Picker } from "react-native-woodpicker";
 import { ActionButton } from "../components/action-button";
+import { DeleteAlert } from "../components/alertable";
 import { DateRow } from "../components/date-row";
 import { TextInputField } from "../components/text-input-field";
 import {
+  IncomeDate,
   IncomeModel,
   incomePerMonth,
   incomePerWeek,
   incomePerYear,
+  IncomeType,
 } from "../models/income-model";
 import { Storage } from "../utils/storage";
 import { Utility } from "../utils/utility";
 
 export const EditIncomeModal = ({ navigation, route }) => {
-  const incomeTypes = ["Weekly", "Biweekly", "Monthly", "Semimonthly"];
+  const incomeTypes = Object.keys(IncomeType).map((type) => {
+    return IncomeType[type];
+  });
   const model = route?.params?.source;
 
   const [name, setName] = useState(model?.source ? model.source : "");
   const [amount, setAmount] = useState(
     model?.amount ? `${model.amount / 100}` : ""
   );
-  const [type, setType] = useState(model?.type ? model.type : "Weekly");
-  const [dates, setDates] = useState(model?.dates ? [{}] + model.dates : [{}]);
+  const [type, setType] = useState(
+    model?.type ? model.type : IncomeType.Weekly
+  );
+  const [dates, setDates] = useState(
+    model?.dates ? [new IncomeDate()] + model.dates : [new IncomeDate()]
+  );
 
-  let tempModel = model || IncomeModel;
+  let tempModel = model || new IncomeModel();
 
   const setDetails = (name, newAmount, type) => {
     if (name != undefined) {
@@ -48,23 +50,10 @@ export const EditIncomeModal = ({ navigation, route }) => {
   };
 
   const del = async () => {
-    Alert.alert(
-      `Delete ${name}?`,
-      "Are you sure you want to delete this income source?",
-      [
-        {
-          text: "Yes",
-          style: "destructive",
-          onPress: async () => {
-            await Storage.deleteIncome(model);
-            navigation.goBack();
-          },
-        },
-        {
-          text: "No",
-        },
-      ]
-    );
+    DeleteAlert(name, "income source", async () => {
+      await Storage.deleteIncome(model);
+      navigation.goBack();
+    });
   };
 
   const save = async () => {
@@ -89,6 +78,8 @@ export const EditIncomeModal = ({ navigation, route }) => {
     }
     return true;
   };
+
+  console.log(type);
 
   return (
     <ScrollView>
@@ -124,10 +115,8 @@ export const EditIncomeModal = ({ navigation, route }) => {
           />
         </View>
         <View style={styles.list_container}>
-          <Text>Dates:</Text>
-          <DateRow date={{ type: "weekly", value: 15 }} />
           {dates.map((date) => {
-            return <DateRow date={date} />;
+            return <DateRow date={date} type={type} />;
           })}
         </View>
         <View style={styles.horizontal_field_container}>
